@@ -1,3 +1,8 @@
+variable "project" {}
+variable "stage" {}
+variable "application_name" {}
+variable "parent_zone" {}
+
 provider "aws" {
   region = "eu-west-1"
   alias  = "default"
