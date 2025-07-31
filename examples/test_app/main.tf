@@ -10,15 +10,15 @@ module "cloudfront_s3" {
     aws = aws.default
   }
 
-  namespace                           = "constr"
-  stage                               = "acc"
-  name                                = "helper-cf-s3-example"
+  namespace                           = var.project
+  stage                               = var.stage
+  name                                = var.application_name
   dns_alias_enabled                   = true
-  parent_zone_name                    = "constr.acc.guidion.io"
+  parent_zone_name                    = var.parent_zone
   acm_certificate_arn                 = ""
   additional_tag_map                  = { "testing_tags" = "test" }
   allowed_methods                     = ["HEAD", "GET"]
-  cors_allowed_origins                = ["foobar.constr.acc.guidion.io"]
+  cors_allowed_origins                = ["aux-1.constr.acc.guidion.io"]
   cors_allowed_methods                = ["HEAD", "GET"]
   cache_policy_id                     = data.aws_cloudfront_cache_policy.managed.id
   origin_request_policy_id            = data.aws_cloudfront_origin_request_policy.managed.id
