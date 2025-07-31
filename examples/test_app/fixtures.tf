@@ -1,11 +1,11 @@
 locals {
   index_pattern    = "/index.html"
-  application_name = "helper-cf-s3-example"
-  project          = "constr"
-  stage            = "acc"
+  application_name = var.application_name
+  project          = var.project
+  stage            = var.stage
 
   tags = {
-    module  = "terraform-aws-helper-cloudfront-s3"
+    module  = "terraform-aws-helper-cf-s3"
     testing = "true"
   }
 }
@@ -30,33 +30,6 @@ data "aws_cloudfront_response_headers_policy" "managed" {
   name     = "Managed-CORS-with-preflight-and-SecurityHeadersPolicy"
 }
 
-data "aws_iam_policy_document" "lambda_at_edge" {
-  statement {
-    actions = ["sts:AssumeRole"]
-
-    principals {
-      type = "Service"
-      identifiers = [
-        "lambda.amazonaws.com",
-        "ec2.amazonaws.com",
-        "edgelambda.amazonaws.com"
-      ]
-    }
-  }
-}
-resource "aws_iam_role" "lambda_at_edge" {
-  name = "helper-cf-s3-example"
-
-  assume_role_policy = data.aws_iam_policy_document.lambda_at_edge.json
-
-  tags = local.tags
-}
-resource "aws_iam_role_policy_attachment" "lambda_at_edge" {
-  role       = aws_iam_role.lambda_at_edge.name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
-}
-
-
 provider "aws" {
   region = "us-east-1"
   alias  = "useast1"
@@ -67,7 +40,7 @@ module "lambda_at_edge" {
 
   providers = { aws = aws.useast1 }
 
-  role_arn = aws_iam_role.lambda_at_edge.arn
+  role_arn = var.role_arn
   functions = {
     "${local.project}-${local.application_name}-originrequest" = {
       source = [{

@@ -2,6 +2,7 @@ variable "project" {}
 variable "stage" {}
 variable "application_name" {}
 variable "parent_zone" {}
+variable "role_arn" {}
 
 provider "aws" {
   region = "eu-west-1"
